@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FontData.html</title>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let canvas = document.getElementById("myCanvas");
+        let context = canvas.getContext("2d");
+
+        let fontSize = 13;
+        let fontFam = "";
+        let fontColor = "#FFFFFF";
+
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        context.font = fontSize + "px" + fontFam;
+        context.fillStyle = fontColor;
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+
+        let char = "A";
+        context.fillText(char, canvas.width /2, canvas.height / 2);
+
+        let downloadLink = document.getElementById("downloadLink");
+        downloadLink.addEventListener("click", function () {
+          let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+          let pixel = imgData.data;
+          let hexData = "";
+
+          for (let i = 0; i < pixel.length; i += 4) {
+            let r = pixel[i];
+            let g = pixel[i + 1];
+            let b = pixel[i + 2];
+            let hex =
+              "#" +
+              ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+            hexData += hex +", ";
+          }
+          let fileBlob = new Blob([hexData], { type: "text/plain" });
+          downloadLink.href = URL.createObjectURL(fileBlob);
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="16" height="34"></canvas>
+
+    <a href="#" id="downloadLink" download="pixel.data.txt"> Download</a>
+  </body>
+</html>
